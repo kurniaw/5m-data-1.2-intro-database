@@ -1,26 +1,57 @@
-# Lesson
+# **📘 Lesson Plan: Data Modeling & Schema Design**
 
-## Brief
+Module: 1.2 Data Modeling
 
-### Preparation
+Target Audience: Adult Learners (Basic Python knowledge)
 
-Basic understanding of RDBMS tables and columns.
+Methodology: Flipped Classroom / Code-Along / Problem-Based Learning
 
-### Lesson Overview
+## **🎯 Learning Objectives**
 
-This lesson introduces database concepts, data modeling and normalization. Learners will be able to perform data modeling and create ERD from case study. Learners will also be able to normalize database schema.
+By the end of this session, learners will be able to:
+
+1. **Analyze** the differences between Relational, NoSQL, and Vector databases to select the correct tool for a business problem.  
+2. **Apply** the concepts of Primary Keys and Foreign Keys to **create** a logical Entity-Relationship Diagram (ERD) using DBML.  
+3. **Evaluate** a raw, un-normalized dataset and **decompose** it into a 3rd Normal Form (3NF) schema to reduce data redundancy.
+
+## **⏱️ Agenda & Topic Prioritization**
+
+| Time | Section | Focus | Top 3 Core Topics (Must Cover) | Optional Topics (Mention briefly or Skip) |
+| :---- | :---- | :---- | :---- | :---- |
+| **0:00 \- 0:50** | **1\. The Data Landscape** | **Analyze** | **Relational vs. Non-Relational Context:** Understanding *when* to use SQL is as important as *how*. | History of SQL, Storage engines, Vector math details. |
+| *0:50 \- 1:00* | *Break* |  |  |  |
+| **1:00 \- 1:50** | **2\. Blueprinting (ERD)** | **Create** | **ERD Construction & Keys (PK/FK):** The logic of linking tables via Foreign Keys. | Recursive relationships, Complex Many-to-Many logic. |
+| *1:50 \- 2:00* | *Break* |  |  |  |
+| **2:00 \- 2:50** | **3\. Normalization** | **Evaluate** | **Practical Normalization (1NF-3NF):** Decomposing flat spreadsheets into relational structures. | BCNF, 4NF, 5NF, Formal definitions of "Transitive Dependency". |
+| **2:50 \- 3:00** | **Wrap Up** | **Synthesize** | Q\&A, Next Steps. |  |
 
 ---
+## **🔵 Section 1: The Landscape of Data**
 
-## Part 1 - Introduction to relational databases
+**Goal:** Demystify databases and establish why SQL is the standard for structured data.
 
-Conceptual knowledge, refer to slides.
+### **1.1 The Narrative**
 
----
+Welcome everyone. Since you know Python, you know how to store data in variables. But what happens when you turn the computer off? The data is gone.
 
-## Part 2 - Data modeling
+To persist data, we need a Database. But not all data is created equal.
 
-### 2.1 SQL Data Types
+* You wouldn't use a spreadsheet to store a 4K movie.  
+* You wouldn't use a video player to calculate your taxes.
+
+Today, we aren't just learning code; we are learning **Architecture**. We are going to learn how to decide *where* data lives.
+
+### **1.2 Concept: The Three Pillars**
+
+*Display this comparison table.*
+
+| Type | The "Vibe" | Best For... | Tech Examples |
+| :---- | :---- | :---- | :---- |
+| **Relational (SQL)** | **Structured & Rigid.** Think of it like a bank vault. Highly organized, strict rules. | Financials, Inventories, User Accounts. | PostgreSQL, MySQL, Snowflake |
+| **NoSQL** | **Flexible & Fast.** Think of it like a messy desk. Throw documents anywhere, find them fast. | Social Media feeds, Chat logs, IoT sensor data. | MongoDB, Cassandra |
+| **Vector** | **Semantic & AI.** Think of it like a brain association game. "King" is close to "Queen". | Image search, LLM Memory, Recommendation engines. | Pinecone, Weaviate |
+
+### **1.3 SQL Data Types**
 
 Here are the common data types, every database has its own set of data types.
 
@@ -34,248 +65,498 @@ Here are the common data types, every database has its own set of data types.
 | `DATETIME` | Date and time.             |
 | `BOOLEAN`  | True or false.             |
 
-### 2.2 Entity-relationship diagram (ERD)
 
-An entity-relationship diagram (ERD) is a visual representation of entities and their relationships in a database. ERD is a data modeling technique. It is a graphical representation of data requirements for a database.
+### **🟢 Activity 1: The Sorting Game (10 Mins)**
 
-![ERD](./assets/erd.png)
+Type: Class Discussion / Quick Poll
 
-#### 2.2.1 Entities
+Prompt: "I am the CEO of a new Startup. I have 4 features I need to build. Tell me which database type I should use and WHY."
 
-An entity is a real-world object, for example, an employee, bank account, car, etc. An entity has attributes that represent properties such as an employee has a name, age, and salary. An entity set is a collection of similar entities. For example, all employees have some common attributes.
+1. **User Profile Pictures:** 
+    <details>
+      <summary>Answer: </summary>
+      NoSQL/Object Store for the image binary, or SQL for the file path.
+    </details>
 
-#### 2.2.2 Relationships
+2. **Payment Processing:**  
+   <details>
+     <summary>Answer: </summary>
+     SQL. We need ACID (Atomicity, Consistency, Isolation, and Durability) compliance/Transactions.
+   </details>
 
-A relationship is an association among entities. For example, an employee works at a department, a car has a model, etc. A relationship set is a collection of similar relationships. For example, all employees work at some department. A relationship can have attributes. For example, the salary of an employee in a department.
+3. **"Find me songs that sound like Jazz":** 
+   <details>
+     <summary>Answer: </summary>  
+     Vector Database
+   </details>
 
-#### 2.2.3 Cardinality
+4. **A live chat for a video game:** 
+   <details>
+     <summary>Answer: </summary>
+     NoSQL. High volume, simple structure.
+   </details>
+---
+## **🔵 Section 2: Building the Blueprint (ERD)**
 
-Cardinality represents the number of entities in one entity set, which can be associated with the number of entities of another entity set. There are three types of cardinality:
+**Goal:** Learn the syntax of relationships using DBML.
 
-- One to one: One entity from entity set A can be associated with at most one entity of entity set B and vice versa.
-- One to many: One entity from entity set A can be associated with more than one entity of entity set B, but an entity from entity set B can be associated with at most one entity of entity set A.
-- Many to many: One entity from entity set A can be associated with more than one entity of entity set B and vice versa.
+### **2.1 The Narrative**
 
-### 2.3 ERD Tools
+Before we write SQL queries, we need a map. An Architect draws a blueprint before the construction crew lays bricks. An **ERD (Entity Relationship Diagram)** is our blueprint.
 
-Use [dbdiagram.io](https://dbdiagram.io/d) to design and create ERD. Sign in with your Google or Github account.
+The glue that holds this blueprint together is the **ID**.
 
-`dbdiagram.io` is a free online database schema design and modeling tool. It allows you to draw ERD using a markup language called DBML (Database Markup Language). It is a simple and easy-to-use language to define and document database schemas.
+### **2.2 Concept: The Keys**
 
-### 2.4 Case Study
+1. **Primary Key (PK):** The unique NRIC number of a row.  
+   * *Rule:* It creates identity. If two rows have the same PK, the database explodes (throws an error).  
+2. **Foreign Key (FK):** The reference pointing to someone else's PK.  
+   * *Rule:* It creates relationships. "I belong to that person over there."
 
-#### 2.4.1 Scenario 1
+### **🟢 Activity 2.2.1: Code-Along \- Car Insurance Schema (15 Mins)**
 
-Construct an ERD for a car insurance company whose customers own one or more cars each. Each car has associated with it zero to any number of recorded accidents.
+Tools: [dbdiagram.io](https://dbdiagram.io/d)
 
-Each entity has the following attributes:
-
-- Customer: id, name, address, phone, email
-- Car: id, make, model, year, car_plate
-- Accident: id, date, location, description, car_id
-
-Use the following DBML to create the ERD.
+Instructions: Paste the following code. Review the comments as we go.
 
 ```dbml
+// --- 1. Define the Customer ---
+// A 'Table' represents a noun (a person, place, or thing).
 Table customers {
-  id int [pk, increment]
-  name varchar
-  address varchar
-  phone varchar
-  email varchar
+  id int [pk, increment] // PRIMARY KEY: The unique ID for every customer
+  name varchar           // Their full name
+  address varchar        // Where they live
+  phone varchar          // Contact info
+  email varchar          // Contact info
 }
 
+// --- 2. Define the Car ---
+// A car cannot exist in our system without an owner.
 Table cars {
   id int [pk, increment]
-  make varchar
-  model varchar
+  make varchar           // e.g., Toyota
+  model varchar          // e.g., Corolla
   year int
   car_plate varchar
-  customer_id int
+  
+  // FOREIGN KEY: This is the critical link.
+  // It holds the ID of the customer who owns this car.
+  customer_id int 
 }
 
+// --- 3. Define the Link (Relationship) ---
+// The '>' symbol translates to "One-to-Many".
+// Read as: "One Customer can have Many Cars"
+Ref: cars.customer_id > customers.id 
+
+
+// --- 🟢 CHALLENGE ---
+// Task: Add an 'accidents' table below.
+// Requirements:
+// 1. Accidents have a date, location, and description.
+// 2. An accident happens to a specific CAR.
+// 3. Link the accident to the car.
 Table accidents {
   id int [pk, increment]
-  date datetime
+  date date 
   location varchar
   description text
   car_id int
 }
 
-Ref: cars.customer_id > customers.id // many-to-one
-
-Ref: accidents.car_id > cars.id // many-to-one
+Ref: accidents.car_id > cars.id
 ```
+### **Solution**
 
-#### 2.4.2 Scenario 2
+<details>
+
+  <summary>Click here to view solution</summary>
+
+#### **Activity 2.2.1**
+```dbml
+Table accidents {
+  id int [pk, increment]
+  date datetime
+  location varchar
+  description text
+  
+  car_id int // FK pointing to the car
+}
+Ref: accidents.car_id > cars.id
+```
+</details>
+
+
+### **🟢 Workshop 2.2.2 : School System (15 Mins)**
 
 Construct an ERD for a school system whose classes have students and teachers. Each student belongs to a single class. Each teacher may teach more than one class, and each class may have more than one teacher.
 
 Each entity has the following attributes:
 
-- Student: id, name, address, phone, email, class_id
-- Teacher: id, name, address, phone, email
-- Class: id, name, teacher_id
+> - Student: id, name, address, phone, email, class_id
+> - Teacher: id, name, address, phone, email
+> - Class: id, name, teacher_id
 
-> Write the DBML to create the ERD.
-
-#### 2.4.3 Scenario 3
-
-Construct an ERD for a company that sells movies online. The company has a website where customers can browse available movies and place orders. Each order can contain multiple movies.
-
-> List the entities and attributes. Write the DBML to create the ERD.
+* Write the DBML to create the ERD.
+* Submit your code in Discord Peer-Review Channel: https://discord.com/channels/1165846570177150996/1457586759667028094
 
 ---
+## **🔵 Section 3: Organizing Your Data (Like Tidying Your Home)**
 
-## Part 3 - Normalization
+**Goal:** Learn how to arrange information efficiently so you don't store the same thing multiple times.
 
-Normalization is a process of organizing the data in the database in accordance with a series of so-called _normal forms_ to remove _data redundancy_, avoid _anomalies_ and ensure _referential integrity_.
+> **Interactive Tutorial:** Before reading further, try the [Normalization Interactive Visualization](./visualisation/normalization-interactive.html). Open this file in your web browser and follow the 8-step guided tour to see these ideas come to life.
 
-The objective of normalization is as follows:
+### **3.1 Why This Matters: The Coffee Shop Story**
 
-1. To free the database from unwanted insertions, updates, & deletion dependencies
-2. To reduce the need for refactoring the database as new types of data are introduced
-3. To make the relational model more informative to users
-4. To make the database neutral to the query statistics
+Picture this: You're a regular at a coffee shop. Every time you buy coffee, the cashier writes down your order along with your complete home address on a paper slip.
 
-### 3.1 Data Redundancy
+Now imagine you move to a new apartment. The coffee shop would need to dig through hundreds of old receipts and update your address on every single one. That's exhausting and error-prone!
 
-Data redundancy is a condition created within a database or data storage technology in which the same piece of data is held in two separate places. This can mean two different fields within a single database, or two different spots in multiple software environments or platforms.
+This problem is called an "Update Anomaly" - when changing one piece of information forces you to update it in many places.
 
-### 3.2 Anomalies
+**Normalization** is like organizing your home: instead of keeping your keys in random places throughout the house, you put them in one designated spot. Similarly, we organize data so each piece of information lives in exactly one place. [freecodecamp](https://www.freecodecamp.org/news/database-normalization-1nf-2nf-3nf-table-examples/)
 
-There are three types of anomalies that occur when the database is not normalized.
+***
 
-- Insertion anomaly: Inability to insert data into the database due to absence of other data.
-- Deletion anomaly: Loss of data due to deletion of other data.
-- Update anomaly: Update inconsistency due to redundancy of data.
+### **3.2 The Three Rules of Good Organization**
 
-### 3.3 Referential Integrity
+Think of these as three levels of tidiness. Here's a simple way to remember them: [stackoverflow](https://stackoverflow.com/questions/2331838/normalization-in-plain-english)
 
-Referential integrity is a database concept that ensures that relationships between tables _remain consistent_. Every value of a foreign key _must be matched_ to a value of the primary key of another table.
+**"Every fact should be about the key, the whole key, and nothing but the key."**
 
-- If the primary key value does not exist, the row referencing the value in the other table cannot be inserted into the table.
-- If a value of the primary key is modified or deleted, all matching foreign key values must be modified/deleted as well.
-- It prohibits the deletion of a row in the referenced table if there are corresponding rows in the referencing table.
+Let's break that down with real-world examples:
 
-### 3.4 Normal Forms
+#### **Rule 1 (1NF): One Item Per Space - "No Grocery Bags in Cells"**
 
-There are six normal forms (1NF, 2NF, 3NF, BCNF, 4NF, 5NF) for database normalization.
+**Real-Life Analogy:** Imagine your closet. You wouldn't stuff 3 shirts onto a single hanger and write "blue shirt, red shirt, green shirt" on one label. Each shirt gets its own space. [red-gate](https://www.red-gate.com/blog/normalization-1nf-2nf-3nf)
 
-- First Normal Form (1NF)
-- Second Normal Form (2NF)
-- Third Normal Form (3NF)
-- Boyce-Codd Normal Form (BCNF)
-- Fourth Normal Form (4NF)
-- Fifth Normal Form (5NF)
+**The Problem - Before 1NF:**
 
-Here we are just going to discuss the first 3 normal forms, which are the most commonly used.
+Your shopping list looks like this:
 
-#### 1NF
+| Person | Favorite Fruits |
+|--------|----------------|
+| Sarah  | Apple, Banana, Orange |
+| Mike   | Grape, Mango |
 
-A table is in 1NF if:
+**What's wrong?** The "Favorite Fruits" cell contains multiple values crammed together. If you want to count how many people like apples, you'd have to split apart that cell manually.
 
-- Each table cell should contain a single value
-- Each record needs to be unique
-- Each column should contain values of the same type
+**The Solution - After 1NF:**
 
-#### 2NF
+| Person | Favorite Fruit |
+|--------|---------------|
+| Sarah  | Apple |
+| Sarah  | Banana |
+| Sarah  | Orange |
+| Mike   | Grape |
+| Mike   | Mango |
 
-A table is in 2NF if:
+**Why it's better:** Now each cell contains exactly one piece of information. You can easily search, count, and organize. [digitalocean](https://www.digitalocean.com/community/tutorials/database-normalization)
 
-- Must be in 1NF
-- No partial depencies (All non-key attributes must fully depend on the primary key )
+***
 
-#### 3NF
+#### **Rule 2 (2NF): Everything Relates to the Complete ID - "The Address Book Rule"**
 
-A table is in 3NF if:
+**Real-Life Analogy:** Think of an address book. You wouldn't write someone's home address next to each phone call you made to them. The address belongs with the person's name, not with individual calls. [datacamp](https://www.datacamp.com/tutorial/normalization-in-sql)
 
-- Must be in 2NF
-- No transitive dependencies (Non-key attributes shouldn't depend on other non-key attributes)
+**The Problem - Before 2NF:**
 
-### Denormalized Table
+Imagine a library tracking who borrowed which books:
 
-No normalization. Nested and redundant data is allowed.
+| Student ID | Student Name | Book ID | Book Title | Borrow Date |
+|-----------|-------------|---------|-----------|-------------|
+| 001 | Alice | B10 | Harry Potter | 2026-01-10 |
+| 001 | Alice | B20 | Hobbit | 2026-01-12 |
+| 002 | Bob | B10 | Harry Potter | 2026-01-11 |
 
-### 3.5 Case Study
+**What's wrong?** Alice's name appears twice. If Alice changes her name (marriage, legal change), you'd have to update multiple rows. Also, "Book Title" really depends on "Book ID," not on the specific borrowing transaction.
 
-Let's use an example of ecommerce company with customer orders. Each customer can place multiple orders. Each order can contain multiple items.
+**The Solution - After 2NF:**
 
-#### 3.5.1 First Normal Form (1NF)
+Split into three tables:
 
-The `OrderDetails` table is in 1NF because each row is unique and each column has a single value.
+**Students Table:**
+| Student ID | Student Name |
+|-----------|-------------|
+| 001 | Alice |
+| 002 | Bob |
 
-| OrderID | ItemID | ItemName | ItemPrice | CustomerID | CustomerName | OrderDate  |
-| ------- | ------ | -------- | --------- | ---------- | ------------ | ---------- |
-| 100     | 10     | iPhone   | 1000      | 1          | John         | 2021-01-01 |
-| 100     | 20     | iPad     | 500       | 1          | John         | 2021-01-01 |
-| 200     | 30     | Macbook  | 2000      | 1          | John         | 2021-01-02 |
-| 300     | 10     | iPhone   | 1000      | 2          | Mary         | 2021-01-03 |
-| 300     | 30     | Macbook  | 2000      | 2          | Mary         | 2021-01-03 |
+**Books Table:**
+| Book ID | Book Title |
+|---------|-----------|
+| B10 | Harry Potter |
+| B20 | Hobbit |
 
-The problem is that now we don’t have a unique primary key. That is, 100 occurs in
-the `OrderID` column in two different rows.
+**Borrowing Records:**
+| Student ID | Book ID | Borrow Date |
+|-----------|---------|-------------|
+| 001 | B10 | 2026-01-10 |
+| 001 | B20 | 2026-01-12 |
+| 002 | B10 | 2026-01-11 |
 
-To create a unique primary (composite) key, let's number the lines in each order by adding a new column called `LineNumber`.
+**Why it's better:** Student information lives in one place, book information lives in one place. Each piece of information connects to its complete identifier. [guides.visual-paradigm](https://guides.visual-paradigm.com/a-comprehensive-guide-to-database-normalization-with-examples/)
 
-| OrderID | LineNumber | ItemID | ItemName | ItemPrice | CustomerID | CustomerName | OrderDate  |
-| ------- | ---------- | ------ | -------- | --------- | ---------- | ------------ | ---------- |
-| 100     | 1          | 10     | iPhone   | 1000      | 1          | John         | 2021-01-01 |
-| 100     | 2          | 20     | iPad     | 500       | 1          | John         | 2021-01-01 |
-| 200     | 1          | 30     | Macbook  | 2000      | 1          | John         | 2021-01-02 |
-| 300     | 1          | 10     | iPhone   | 1000      | 2          | Mary         | 2021-01-03 |
-| 300     | 2          | 30     | Macbook  | 2000      | 2          | Mary         | 2021-01-03 |
+***
 
-Now we have a unique primary key, which is the combination of `OrderID` and `LineNumber`.
+#### **Rule 3 (3NF): No Chain Dependencies - "The Phone Directory Principle"**
 
-#### 3.5.2 Second Normal Form (2NF)
+**Real-Life Analogy:** In a phone directory, you look up a person's name to get their phone number. You don't look up their phone number to find their city, then use the city to find their zip code. That's a "chain" - one thing leading to another. [freecodecamp](https://www.freecodecamp.org/news/database-normalization-1nf-2nf-3nf-table-examples/)
 
-To reach 2NF, we need to remove partial dependencies. A partial dependency is when one or more columns in a table depend on a subset of the primary key, but not on the whole primary key; it can only occur only when the _primary key is composite_.
+**The Problem - Before 3NF:**
 
-In this case, the last three columns (`CustomerID`, `CustomerName`, `OrderDate`) depend on only part of the primary key (`OrderID`). They do not depend on the `LineNumber` column.
+Your employee database looks like this:
 
-To fix this, we need to split the table into two tables: `Orders` and `OrderLineItems`.
+| Employee ID | Employee Name | Department Code | Department Name | Department Manager |
+|------------|--------------|-----------------|-----------------|-------------------|
+| E001 | Alice | D10 | Sales | John Smith |
+| E002 | Bob | D10 | Sales | John Smith |
+| E003 | Carol | D20 | Marketing | Jane Doe |
 
-`Orders` table:
+**What's wrong?** "Department Name" and "Department Manager" don't really depend on the employee. They depend on the "Department Code." If the Sales manager changes from John Smith to Mary Johnson, you'd have to update every sales employee's row. [digitalocean](https://www.digitalocean.com/community/tutorials/database-normalization)
 
-| OrderID | CustomerID | CustomerName | OrderDate  |
-| ------- | ---------- | ------------ | ---------- |
-| 100     | 1          | John         | 2021-01-01 |
-| 200     | 1          | John         | 2021-01-02 |
-| 300     | 2          | Mary         | 2021-01-03 |
+**Visual representation of the dependency chain:**
+```
+Employee ID → Department Code → Department Name
+Employee ID → Department Code → Department Manager
+```
 
-`OrderLineItems` table:
+This is called a "transitive dependency" - information depending on something that depends on something else. [datacamp](https://www.datacamp.com/tutorial/normalization-in-sql)
+
+**The Solution - After 3NF:**
+
+Split into two tables:
+
+**Employees Table:**
+| Employee ID | Employee Name | Department Code |
+|------------|--------------|-----------------|
+| E001 | Alice | D10 |
+| E002 | Bob | D10 |
+| E003 | Carol | D20 |
+
+**Departments Table:**
+| Department Code | Department Name | Department Manager |
+|-----------------|-----------------|-------------------|
+| D10 | Sales | John Smith |
+| D20 | Marketing | Jane Doe |
+
+**Why it's better:** When the Sales manager changes, you update ONE cell in the Departments table. All employees automatically reflect this change when you look up their department. [freecodecamp](https://www.freecodecamp.org/news/database-normalization-1nf-2nf-3nf-table-examples/)
+
+***
+
+### **🟢 Activity 3: The E-Commerce Deconstruction (Group Breakout - 20 Mins)**
+
+Let's practice with a real online store example, going through all three rules step by step.
+
+#### **Starting Point: The Messy Spreadsheet**
+
+Imagine you're running an online store and currently track everything in one big table:
+
+| OrderID | ItemID | ItemName | ItemPrice | CustomerID | CustomerName | OrderDate |
+|---------|--------|----------|-----------|-----------|-------------|-----------|
+| 100 | 10 | iPhone | 1000 | 1 | John | 2021-01-01 |
+| 100 | 20 | iPad | 500 | 1 | John | 2021-01-01 |
+| 200 | 30 | Macbook | 2000 | 1 | John | 2021-01-02 |
+| 300 | 10 | iPhone | 1000 | 2 | Mary | 2021-01-03 |
+| 300 | 30 | Macbook | 2000 | 2 | Mary | 2021-01-03 |
+
+***
+
+#### **Step 1: Applying Rule 1 (1NF) - Making Each Row Unique**
+
+**The Problem:** Look at OrderID 100 - it appears in two rows (iPhone and iPad). Which row is "the order"? Both? This is confusing!
+
+**Think of it like a receipt:** When you get a store receipt, it has ONE receipt number at the top, but multiple line items below. Each line item needs its own identifier.
+
+**The Solution:** Add a line number to create a unique identifier for each row:
+
+| OrderID | LineNumber | ItemID | ItemName | ItemPrice | CustomerID | CustomerName | OrderDate |
+|---------|-----------|--------|----------|-----------|-----------|-------------|-----------|
+| 100 | 1 | 10 | iPhone | 1000 | 1 | John | 2021-01-01 |
+| 100 | 2 | 20 | iPad | 500 | 1 | John | 2021-01-01 |
+| 200 | 1 | 30 | Macbook | 2000 | 1 | John | 2021-01-02 |
+| 300 | 1 | 10 | iPhone | 1000 | 2 | Mary | 2021-01-03 |
+| 300 | 2 | 30 | Macbook | 2000 | 2 | Mary | 2021-01-03 |
+
+**Key Insight:** Now each row has a unique two-part ID: (OrderID + LineNumber). Just like "Building A, Apartment 301" uniquely identifies a location.
+
+✅ **Rule 1 Complete!** Each row is now uniquely identifiable.
+
+***
+
+#### **Step 2: Applying Rule 2 (2NF) - Separating Order Info from Item Info**
+
+**The Problem:** Look at John's information (CustomerID, CustomerName, OrderDate). Does this change between line items? No! Whether John bought an iPhone (line 1) or an iPad (line 2), he's still John, and the order date is still 2021-01-01.
+
+**Visual Diagram - What depends on what:**
+
+```
+(OrderID + LineNumber) → ItemID, ItemName, ItemPrice ✓ (Needs both parts)
+OrderID only → CustomerID, CustomerName, OrderDate ✓ (Doesn't need LineNumber)
+```
+
+The customer information only cares about OrderID, not LineNumber. This violates Rule 2. [digitalocean](https://www.digitalocean.com/community/tutorials/database-normalization)
+
+**The Solution:** Split into two tables based on what the information really describes:
+
+**Orders Table** (one row per order):
+
+| OrderID | CustomerID | CustomerName | OrderDate |
+|---------|-----------|-------------|-----------|
+| 100 | 1 | John | 2021-01-01 |
+| 200 | 1 | John | 2021-01-02 |
+| 300 | 2 | Mary | 2021-01-03 |
+
+**Order Line Items Table** (one row per item in an order):
 
 | OrderID | LineNumber | ItemID | ItemName | ItemPrice |
-| ------- | ---------- | ------ | -------- | --------- |
-| 100     | 1          | 10     | iPhone   | 1000      |
-| 100     | 2          | 20     | iPad     | 500       |
-| 200     | 1          | 30     | Macbook  | 2000      |
-| 300     | 1          | 10     | iPhone   | 1000      |
-| 300     | 2          | 30     | Macbook  | 2000      |
+|---------|-----------|--------|----------|-----------|
+| 100 | 1 | 10 | iPhone | 1000 |
+| 100 | 2 | 20 | iPad | 500 |
+| 200 | 1 | 30 | Macbook | 2000 |
+| 300 | 1 | 10 | iPhone | 1000 |
+| 300 | 2 | 30 | Macbook | 2000 |
 
-#### 3.5.3 Third Normal Form (3NF)
+**Real-World Comparison:**
+- **Orders Table** = The envelope with order details
+- **Order Line Items Table** = The itemized list inside the envelope
 
-Notice that `ItemID` determines `ItemName` and `ItemPrice`. This is a transitive dependency. A transitive dependency is when one or more columns in a table depend on a non-key column in that table.
+✅ **Rule 2 Complete!** John's name now appears only once per order, not once per item.
 
-Let's break `OrderLineItems` into two tables: `OrderLineItems` and `Items`.
+***
 
-`OrderLineItems` table:
+#### **Step 3: Applying Rule 3 (3NF) - Creating a Product Catalog**
 
-| OrderID | LineNumber | ItemID |
-| ------- | ---------- | ------ |
-| 100     | 1          | 10     |
-| 100     | 2          | 20     |
-| 200     | 1          | 30     |
-| 300     | 1          | 10     |
-| 300     | 2          | 30     |
+**The Problem:** Look at the iPhone - it appears in Order 100 and Order 300, both times with ItemName "iPhone" and ItemPrice 1000. That's duplicate information!
 
-`Items` table:
+**Ask yourself:** Does the iPhone's name and price depend on which specific order purchased it? No! An iPhone is an iPhone regardless of who buys it. [freecodecamp](https://www.freecodecamp.org/news/database-normalization-1nf-2nf-3nf-table-examples/)
+
+**Visual Diagram - The Chain Dependency:**
+
+```
+(OrderID + LineNumber) → ItemID → ItemName, ItemPrice
+                         ↑         ↑
+                         |         |
+                    This is the chain we need to break!
+```
+
+ItemName and ItemPrice depend on ItemID, not on the specific order. This is a "transitive dependency". [datacamp](https://www.datacamp.com/tutorial/normalization-in-sql)
+
+**The Solution:** Create a separate Products catalog:
+
+**Products Table** (one row per product):
 
 | ItemID | ItemName | ItemPrice |
-| ------ | -------- | --------- |
-| 10     | iPhone   | 1000      |
-| 20     | iPad     | 500       |
-| 30     | Macbook  | 2000      |
+|--------|----------|-----------|
+| 10 | iPhone | 1000 |
+| 20 | iPad | 500 |
+| 30 | Macbook | 2000 |
 
-> `Orders` table does not satisfy 3NF. What transitive dependencies are present? How would you fix this?
+**Simplified Order Line Items Table:**
+
+| OrderID | LineNumber | ItemID |
+|---------|-----------|--------|
+| 100 | 1 | 10 |
+| 100 | 2 | 20 |
+| 200 | 1 | 30 |
+| 300 | 1 | 10 |
+| 300 | 2 | 30 |
+
+**Real-World Comparison:**
+- **Products Table** = Your store's product catalog
+- **Order Line Items** = References pointing to items in the catalog
+
+**The Big Win:** If the iPhone price changes to $1,200, you update ONE cell in the Products table. Every query that asks "What's the current price of an iPhone?" automatically gets the new price.
+
+✅ **Rule 3 Complete!** No more chain dependencies!
+
+***
+
+### **📊 Visual Summary: Before and After**
+
+**BEFORE NORMALIZATION:**
+```
+One Big Messy Table (25 rows for 5 orders × 5 details)
+❌ John's name repeated 3 times
+❌ iPhone details repeated 2 times
+❌ Must update multiple places when anything changes
+```
+
+**AFTER NORMALIZATION (1NF → 2NF → 3NF):**
+```
+Orders Table: 3 rows
+Order Line Items: 5 rows
+Products Table: 3 rows
+Total: 11 rows (less than half!)
+
+✅ Each fact stored exactly once
+✅ Easy to update anything anywhere
+✅ No contradictions possible
+```
+
+***
+
+### **🟢 Workshop 3.2.3: Your Turn to Practice**
+
+**Your Assignment:**
+
+Visit [dbdiagram.io](https://dbdiagram.io/d) and create a visual diagram showing how these three tables connect to each other. Here's what to show:
+
+1. Draw three boxes (one for Orders, one for Order Line Items, one for Products)
+2. Show lines connecting them (Orders → Order Line Items → Products)
+3. Mark which columns are IDs that link the tables together
+
+**Hint:** The connecting lines represent "relationships" - like "Each Order has many Line Items" and "Each Line Item refers to one Product."
+
+Share your diagram in Discord: [https://discord.com/channels/1165846570177150996/1457586759667028094](https://discord.com/channels/1165846570177150996/1457586759667028094)
+
+***
+
+### **3.3 Group Discussion: When Breaking Rules Makes Sense**
+
+**Scenario:** Your normalized database is working beautifully. Products are stored once, orders reference them cleanly.
+
+**Question:** "In our cleaned-up design, if the iPhone price increases to $1,200 next year, what happens to Mary's order from 2021?"
+
+**Think about it:**
+- In our normalized design, there's ONE iPhone price in the Products table
+- Mary ordered in 2021 when the price was $1,000
+- If we update the price to $1,200, does Mary's historical order suddenly show $1,200?
+
+**The Answer:** Yes, it would! And that's **wrong** for accounting purposes. [stackoverflow](https://stackoverflow.com/questions/2331838/normalization-in-plain-english)
+
+**The Solution - Intentional Denormalization:**
+
+Add a "sold_price" column to Order Line Items:
+
+| OrderID | LineNumber | ItemID | **Sold_Price** |
+|---------|-----------|--------|---------------|
+| 100 | 1 | 10 | **1000** |
+| 300 | 1 | 10 | **1000** |
+
+This way:
+- **Products Table** shows the current price ($1,200)
+- **Order history** preserves what was actually paid ($1,000)
+
+**Real-Life Analogy:** This is like keeping old receipts. Even if a store raises prices today, your receipt from last year still shows what you paid back then. The store needs both: current prices (for new sales) and historical prices (for accounting records). [digitalocean](https://www.digitalocean.com/community/tutorials/database-normalization)
+
+**Key Lesson:** Normalization is a powerful tool, but sometimes you intentionally keep duplicate data for good business reasons. This is called "denormalization," and it's a conscious design choice, not a mistake.
+
+***
+
+### **🎯 Quick Reference Card**
+
+Print this and keep it handy:
+
+| Rule | Remember It As | Ask Yourself |
+|------|---------------|--------------|
+| **1NF** | One item per space | Are there any cells with lists or multiple values? |
+| **2NF** | The whole key | Does every column need the ENTIRE ID to make sense? |
+| **3NF** | Nothing but the key | Does any column depend on another regular column? |
+
+**The Golden Question:** "If I change this piece of information, how many places do I need to update?"
+- **Many places?** You probably need more normalization.
+- **One place?** You're doing it right! [stackoverflow](https://stackoverflow.com/questions/2331838/normalization-in-plain-english)
+
+***
+
