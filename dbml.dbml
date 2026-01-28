@@ -1,0 +1,45 @@
+// --- 1. Define the Customer ---
+// A 'Table' represents a noun (a person, place, or thing).
+Table customers {
+  id int [pk, increment] // PRIMARY KEY: The unique ID for every customer
+  name varchar           // Their full name
+  address varchar        // Where they live
+  phone varchar          // Contact info
+  email varchar          // Contact info
+}
+
+// --- 2. Define the Car ---
+// A car cannot exist in our system without an owner.
+Table cars {
+  id int [pk, increment]
+  make varchar           // e.g., Toyota
+  model varchar          // e.g., Corolla
+  year int
+  car_plate varchar
+  
+  // FOREIGN KEY: This is the critical link.
+  // It holds the ID of the customer who owns this car.
+  customer_id int 
+}
+
+// --- 3. Define the Link (Relationship) ---
+// The '>' symbol translates to "One-to-Many".
+// Read as: "One Customer can have Many Cars"
+Ref: cars.customer_id > customers.id 
+
+Table accidents {
+  id int [pk, increment]
+  date datetime
+  location varchar
+  description text
+  
+  car_id int // FK pointing to the car
+}
+Ref: accidents.car_id > cars.id
+
+// --- 🟢 CHALLENGE ---
+// Task: Add an 'accidents' table below.
+// Requirements:
+// 1. Accidents have a date, location, and description.
+// 2. An accident happens to a specific CAR.
+// 3. Link the accident to the car.

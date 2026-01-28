@@ -1,0 +1,33 @@
+// Student: id, name, address, phone, email, class_id
+// Teacher: id, name, address, phone, email
+// Class: id, name, teacher_id
+
+Table students {
+  id int [pk, increment] // PRIMARY KEY: The unique ID for every student
+  name varchar           // Their full name
+  address varchar        // Where they live
+  phone varchar          // Contact info
+  email varchar          // Contact info
+  
+  class_id int          // FOREIGN KEY: The class the student is enrolled in
+
+}
+
+Table teachers {
+  id int [pk, increment] // PRIMARY KEY: The unique ID for every teacher
+  name varchar           // Their full name
+  address varchar        // Where they live
+  phone varchar          // Contact info
+  email varchar          // Contact info
+}
+
+Table classes {
+  id int [pk, increment] // PRIMARY KEY: The unique ID for every class
+  name varchar           // Name of the class
+  
+  teacher_id int        // FOREIGN KEY: The teacher assigned to this class
+}
+
+Ref: students.class_id > classes.id // One Class can have Many Students
+Ref: classes.teacher_id > teachers.id // One Teacher can teach Many Classes 
+
